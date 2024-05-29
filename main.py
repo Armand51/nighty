@@ -4,7 +4,7 @@ import shutil
 
 import colorama
 import nightcore as nc
-
+from moviepy.editor import ImageClip AudioFileClip
 colorama.init()
 
 
@@ -102,4 +102,31 @@ list_suffix_img = [".png", ".jpg", ".jpeg", ".tiff", ".jfif", ".webp", ".gif"]
 list_suffix_audio = [".mp3", ".wav", ".ogg", ".m4a", ".m4r"]
 
 nightcorize(list_suffix_audio)
-merge(list_suffix_img)
+
+
+def create_video(image_path, audio_path, output_path, duration=None):
+    # Charger l'image
+    image_clip = ImageClip(image_path)
+
+    # Charger l'audio
+    audio_clip = AudioFileClip(audio_path)
+    
+    # Déterminer la durée de la vidéo
+    video_duration = duration if duration else audio_clip.duration
+    
+    # Définir la durée de l'image (qui devient une vidéo)
+    image_clip = image_clip.set_duration(video_duration)
+    
+    # Associer l'audio à la vidéo
+    video_clip = image_clip.set_audio(audio_clip)
+    
+    # Exporter la vidéo
+    video_clip.write_videofile(output_path, codec='libx264', audio_codec='aac')
+
+# Chemins des fichiers
+audio_path = "ingredients/done/thea.mp3"
+image_path = "ingredients/Rplot01.png"
+output_path = "ta_video.mp4"
+
+# Créer la vidéo
+create_video(image_path, audio_path, output_path)
